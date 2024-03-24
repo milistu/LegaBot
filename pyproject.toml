@@ -13,6 +13,12 @@ beautifulsoup4 = "^4.12.3"
 jupyter = "^1.0.0"
 lxml = "^5.1.0"
 tqdm = "^4.66.2"
+qdrant-client = "^1.8.0"
+python-dotenv = "^1.0.1"
+tiktoken = "^0.6.0"
+openai = "^1.14.2"
+loguru = "^0.7.2"
+aiohttp = "^3.9.3"
 
 
 [build-system]
