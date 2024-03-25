@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import panel as pn
@@ -58,10 +57,13 @@ async def callback(contents: str, user: str, instance: pn.chat.ChatInterface):
         yield message
 
     state["conversation"].append({"role": "assistant", "content": message})
-    # print("-" * 100)
-    # print(state["conversation"])
 
 
-chat_interface = pn.chat.ChatInterface(callback=callback, callback_user="Law Assistant")
-chat_interface.send("Postavi pitanje iz radnog prava!", user="System", respond=False)
-chat_interface.servable()
+if __name__ == "__main__":
+    chat_interface = pn.chat.ChatInterface(
+        callback=callback, callback_user="Law Assistant"
+    )
+    chat_interface.send(
+        "Postavi pitanje iz radnog prava!", user="System", respond=False
+    )
+    chat_interface.servable()
