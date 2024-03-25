@@ -14,11 +14,11 @@ client = OpenAI(
 )
 
 
-def get_answer(model: str, temperature: float, messages: list) -> ChatCompletion:
+def get_answer(
+    model: str, temperature: float, messages: list, stream: bool = False
+) -> ChatCompletion:
     response = client.chat.completions.create(
-        model=model,
-        temperature=temperature,
-        messages=messages,
+        model=model, temperature=temperature, messages=messages, stream=stream
     )
 
     return response
