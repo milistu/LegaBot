@@ -58,7 +58,7 @@ QDRANT_API_KEY=ADD_YOUR_QDRANT_API_KEY
 OPENAI_API_KEY=ADD_YOUR_OPENAI_API_KEY
 ```
 
-### Run the Demo:
+## Run the Demo:
 You can run the demo locally simply by executing this command in your terminal:
 ```bash
 panel serve app.py
