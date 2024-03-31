@@ -4,8 +4,8 @@ import panel as pn
 import yaml
 
 from database.utils import embed_text, get_context, search
-from llm.prompts import CONTEXT_PROMPT, CONVERSATION_PROMPT, QUERY_PROMPT, SYSTEM_PROMPT
-from llm.utils import get_answer
+from llm.prompts import INTRODUCTION_MESSAGE
+from llm.utils import get_answer, get_messages
 
 config_path = Path("./config.yaml")
 
@@ -18,6 +18,10 @@ state = {"conversation": []}
 
 
 async def callback(contents: str, user: str, instance: pn.chat.ChatInterface):
+    state["conversation"] = state["conversation"][
+        config["openai"]["gpt_model"]["max_conversation"] :
+    ]
+
     state["conversation"].append({"role": "user", "content": contents})
 
     embedding_response = embed_text(
@@ -28,24 +32,17 @@ async def callback(contents: str, user: str, instance: pn.chat.ChatInterface):
     search_results = search(
         collection=config["collection"]["name"],
         query_vector=embedding,
-        limit=5,
+        limit=10,
         with_vectors=True,
     )
     context = get_context(search_results=search_results)
 
-    messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {
-            "role": "user",
-            "content": CONVERSATION_PROMPT.format(conversation=state["conversation"]),
-        },
-        {"role": "user", "content": CONTEXT_PROMPT.format(context=context)},
-        {"role": "user", "content": QUERY_PROMPT.format(query=contents)},
-    ]
     response = get_answer(
         model=config["openai"]["gpt_model"]["name"],
         temperature=config["openai"]["gpt_model"]["temperature"],
-        messages=messages,
+        messages=get_messages(
+            context=context, query=contents, conversation=state["conversation"]
+        ),
         stream=True,
     )
 
@@ -59,11 +56,6 @@ async def callback(contents: str, user: str, instance: pn.chat.ChatInterface):
     state["conversation"].append({"role": "assistant", "content": message})
 
 
-if __name__ == "__main__":
-    chat_interface = pn.chat.ChatInterface(
-        callback=callback, callback_user="Law Assistant"
-    )
-    chat_interface.send(
-        "Postavi pitanje iz radnog prava!", user="System", respond=False
-    )
-    chat_interface.servable()
+chat_interface = pn.chat.ChatInterface(callback=callback, callback_user="Law Assistant")
+chat_interface.send(INTRODUCTION_MESSAGE, user="Law Assistant", respond=False)
+chat_interface.servable()
