@@ -12,13 +12,15 @@ config_path = Path("./config.yaml")
 with config_path.open("r") as file:
     config = yaml.safe_load(file)
 
+st.title("Legal ChatBot")
+
 
 def response_generator(query: str):
     st.session_state.messages = st.session_state.messages[
-        config["openai"]["gpt_model"]["max_conversation"] :
+        -1 * config["openai"]["gpt_model"]["max_conversation"] :
     ]
 
-    st.session_state.messages.append({"role": "user", "content": query})
+    # st.session_state.messages.append({"role": "user", "content": query})
 
     embedding_response = embed_text(
         text=query, model=config["openai"]["embedding_model"]["name"]
@@ -33,7 +35,7 @@ def response_generator(query: str):
     )
     context = get_context(search_results=search_results)
 
-    response = get_answer(
+    stream = get_answer(
         model=config["openai"]["gpt_model"]["name"],
         temperature=config["openai"]["gpt_model"]["temperature"],
         messages=get_messages(
@@ -42,26 +44,20 @@ def response_generator(query: str):
         stream=True,
     )
 
-    message = ""
-    for chunk in response:
+    for chunk in stream:
         part = chunk.choices[0].delta.content
         if part is not None:
-            message += part
-        yield message
+            yield part
 
-
-st.title("Legal ChatBot")
 
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "system", "content": INTRODUCTION_MESSAGE}]
+    st.session_state.messages = [{"role": "assistant", "content": INTRODUCTION_MESSAGE}]
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Accept user input and generate response
-# user_input = st.chat_input("Postavi pitanje iz prava...")
-# if user_input:
+
 if prompt := st.chat_input("Postavi pitanje iz prava..."):
     # Generate and display the response
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -74,11 +70,3 @@ if prompt := st.chat_input("Postavi pitanje iz prava..."):
         response = st.write_stream(stream)
 
     st.session_state.messages.append({"role": "assistant", "content": response})
-    # stream = response_generator(user_input)  # Initialize generator
-    # # full_response = "".join(
-    # #     [msg for msg in generator]
-    # # )  # Consume generator to get full response
-    # response = st.write_stream(stream)
-
-    # # Update the UI with the new messages
-    # st.rerun()
