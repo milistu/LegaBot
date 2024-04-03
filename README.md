@@ -61,9 +61,9 @@ OPENAI_API_KEY=ADD_YOUR_OPENAI_API_KEY
 ## Run the Demo:
 You can run the demo locally simply by executing this command in your terminal:
 ```bash
-panel serve app.py
+streamlit run app.py  
 ```
 And UI will be available in your browser on the URL:
 ```
-http://localhost:5006/app
+http://localhost:8501
 ```
