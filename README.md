@@ -1,4 +1,4 @@
-# Law ChatBot Documentation
+# Legal ChatBot Documentation
 
 ## Setting Up the Project
 
