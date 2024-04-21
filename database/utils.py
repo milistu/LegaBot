@@ -1,5 +1,5 @@
 import os
-from typing import List, Union
+from typing import Dict, List, Union
 
 import numpy as np
 import tiktoken
@@ -7,6 +7,7 @@ from config import EMBEDDING_MODEL
 from dotenv import find_dotenv, load_dotenv
 from loguru import logger
 from openai import OpenAI
+from openai.types import CreateEmbeddingResponse
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import (
     Distance,
@@ -39,7 +40,7 @@ def delete_collection(collection: str, timeout: int = None) -> bool:
     return qdrant_client.delete_collection(collection_name=collection, timeout=timeout)
 
 
-def get_collection_info(collection: str) -> dict:
+def get_collection_info(collection: str) -> Dict:
     return qdrant_client.get_collection(collection_name=collection).model_dump()
 
 
@@ -71,7 +72,7 @@ def search(
     limit: int = 10,
     query_filter: Filter = None,
     with_vectors: bool = False,
-) -> list:
+) -> List:
     return qdrant_client.search(
         collection_name=collection,
         query_vector=query_vector,
@@ -81,7 +82,7 @@ def search(
     )
 
 
-def embed_text(text: Union[str, list]):
+def embed_text(text: Union[str, list]) -> CreateEmbeddingResponse:
     """
     - Default model (OpenAI): text-embedding-3-small
     - Max input Tokens: 8191
