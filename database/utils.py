@@ -3,8 +3,6 @@ from typing import Dict, List, Union
 
 import numpy as np
 import tiktoken
-from config import EMBEDDING_MODEL
-from dotenv import find_dotenv, load_dotenv
 from loguru import logger
 from openai import OpenAI
 from openai.types import CreateEmbeddingResponse
@@ -15,9 +13,9 @@ from qdrant_client.http.models import (
     PointStruct,
     UpdateResult,
     VectorParams,
+    ScoredPoint,
 )
 
-load_dotenv(find_dotenv())
 
 qdrant_client = QdrantClient(
     url=os.environ.get("QDRANT_CLUSTER_URL"),
@@ -82,12 +80,24 @@ def search(
     )
 
 
-def embed_text(text: Union[str, list]) -> CreateEmbeddingResponse:
+
+def embed_text(text: Union[str, list], model: str) -> CreateEmbeddingResponse:
     """
     - Default model (OpenAI): text-embedding-3-small
     - Max input Tokens: 8191
     - TikToken model: cl100k_base
     - Embedding size: 1536
     """
-    response = openai_client.embeddings.create(input=text, model=EMBEDDING_MODEL)
+    response = openai_client.embeddings.create(input=text, model=model)
     return response
+
+
+def format_context(payload: dict) -> str:
+    text = f"Naslov: {payload['title']}\n"
+    text += f"Link do člana: {payload['link']}\n"
+    text += f"{payload['text']}\n\n"
+    return text
+
+
+def get_context(search_results: List[ScoredPoint]) -> str:
+    return "\n".join([format_context(point.payload) for point in search_results])

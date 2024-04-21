@@ -1,0 +1,11 @@
+openai:
+  embedding_model:
+    name:  "text-embedding-3-small"
+    dimensions: 1536
+  gpt_model:
+    name:  "gpt-4-turbo-preview"
+    name_light:  "gpt-3.5-turbo"
+    temperature: 0
+    max_conversation: 100
+collection:
+  name: "labor_law"
