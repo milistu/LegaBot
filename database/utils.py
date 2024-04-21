@@ -1,5 +1,5 @@
 import os
-from typing import List, Union
+from typing import Dict, List, Union
 
 import numpy as np
 import tiktoken
@@ -38,7 +38,7 @@ def delete_collection(collection: str, timeout: int = None) -> bool:
     return qdrant_client.delete_collection(collection_name=collection, timeout=timeout)
 
 
-def get_collection_info(collection: str) -> dict:
+def get_collection_info(collection: str) -> Dict:
     return qdrant_client.get_collection(collection_name=collection).model_dump()
 
 
@@ -70,7 +70,7 @@ def search(
     limit: int = 10,
     query_filter: Filter = None,
     with_vectors: bool = False,
-) -> list:
+) -> List:
     return qdrant_client.search(
         collection_name=collection,
         query_vector=query_vector,
@@ -78,6 +78,7 @@ def search(
         with_vectors=with_vectors,
         query_filter=query_filter,
     )
+
 
 
 def embed_text(text: Union[str, list], model: str) -> CreateEmbeddingResponse:
