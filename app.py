@@ -1,18 +1,26 @@
+import json
 from pathlib import Path
 
-import yaml
-
 import streamlit as st
+import yaml
+from loguru import logger
+
 from database.utils import embed_text, get_context, search
 from llm.prompts import INTRODUCTION_MESSAGE
 from llm.utils import get_answer, get_messages
+from router.query_router import rout_query
+
+st.title("Legal ChatBot")
+
 
 config_path = Path("./config.yaml")
+centroid_path = Path("./router/collection_centroids.json")
 
 with config_path.open("r") as file:
     config = yaml.safe_load(file)
 
-st.title("Legal ChatBot")
+with open(centroid_path, "r", encoding="utf-8") as file:
+    centroids = json.loads(file.read())
 
 
 def response_generator(query: str):
@@ -27,8 +35,14 @@ def response_generator(query: str):
     )
     embedding = embedding_response.data[0].embedding
 
+    # Add query
+    collection_name = rout_query(
+        centroids=centroids, query_embedding=embedding
+    ).replace("-", "_")
+    logger.info(f"Query routed to collection name: {collection_name}")
+
     search_results = search(
-        collection=config["collection"]["name"],
+        collection=collection_name,
         query_vector=embedding,
         limit=10,
         with_vectors=True,
