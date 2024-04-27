@@ -25,11 +25,13 @@ qdrant_client = QdrantClient(
 openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 
-def create_collection(name: str, vector_size: int = 1536) -> bool:
+def create_collection(
+    name: str, vector_size: int = 1536, distance: Distance = Distance.COSINE
+) -> bool:
     logger.info(f"Creating collection: {name} with vector size: {vector_size}.")
     return qdrant_client.recreate_collection(
         collection_name=name,
-        vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
+        vectors_config=VectorParams(size=vector_size, distance=distance),
     )
 
 
@@ -78,7 +80,6 @@ def search(
         with_vectors=with_vectors,
         query_filter=query_filter,
     )
-
 
 
 def embed_text(text: Union[str, list], model: str) -> CreateEmbeddingResponse:
