@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from typing import Dict, List
 
@@ -16,10 +15,6 @@ from llm.prompts import (
 config_path = Path("./config.yaml")
 with config_path.open("r") as file:
     config = yaml.safe_load(file)
-
-# client = OpenAI(
-#     api_key=os.environ["OPENAI_API_KEY"],
-# )
 
 
 def get_answer(
