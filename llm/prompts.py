@@ -47,6 +47,8 @@ KONTEKST:
 
 """
 
+DEFAULT_CONTEXT = "Nema konteksta za korisnikovo pitanje."
+
 QUERY_PROMPT = """
 Pitanje klijenta: {query}
 """

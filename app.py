@@ -1,16 +1,21 @@
 import json
+import os
 from pathlib import Path
 
 import streamlit as st
 import yaml
 from loguru import logger
+from openai import OpenAI
 
 from database.utils import embed_text, get_context, search
-from llm.prompts import INTRODUCTION_MESSAGE
+from llm.prompts import INTRODUCTION_MESSAGE, DEFAULT_CONTEXT
 from llm.utils import get_answer, get_messages
-from router.query_router import rout_query
+from router.query_router import semantic_query_router
+from router.router_prompt import DEFAULT_ROUTER_RESPONSE, ROUTER_PROMPT
 
 st.title("Legal ChatBot")
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 
 config_path = Path("./config.yaml")
@@ -35,21 +40,33 @@ def response_generator(query: str):
     )
     embedding = embedding_response.data[0].embedding
 
-    # Add query
-    collection_name = rout_query(
-        centroids=centroids, query_embedding=embedding
-    ).replace("-", "_")
-    logger.info(f"Query routed to collection name: {collection_name}")
-
-    search_results = search(
-        collection=collection_name,
-        query_vector=embedding,
-        limit=10,
-        with_vectors=True,
+    # Rout query
+    collections = semantic_query_router(
+        client=client,
+        query=query,
+        prompt=ROUTER_PROMPT,
+        temperature=config["openai"]["gpt_model"]["temperature"],
     )
-    context = get_context(search_results=search_results)
+    logger.info(f"Query routed to collections: {collections}")
+
+    if collections == DEFAULT_ROUTER_RESPONSE:
+        context = DEFAULT_CONTEXT
+    else:
+        search_results = []
+        for collection_name in collections:
+            search_results.extend(
+                search(
+                    collection=collection_name,
+                    query_vector=embedding,
+                    limit=10,
+                    with_vectors=True,
+                )
+            )
+
+        context = get_context(search_results=search_results)
 
     stream = get_answer(
+        client=client,
         model=config["openai"]["gpt_model"]["name"],
         temperature=config["openai"]["gpt_model"]["temperature"],
         messages=get_messages(
