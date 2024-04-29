@@ -63,7 +63,7 @@ def response_generator(query: str):
                 )
             )
 
-        context = get_context(search_results=search_results)
+        context = get_context(search_results=search_results, top_k=10)
 
     stream = get_answer(
         client=client,
