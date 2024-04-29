@@ -100,5 +100,9 @@ def format_context(payload: dict) -> str:
     return text
 
 
-def get_context(search_results: List[ScoredPoint]) -> str:
+def get_context(search_results: List[ScoredPoint], top_k: int = None) -> str:
+    if top_k is not None:
+        search_results = sorted(search_results, key=lambda x: x.score, reverse=True)[
+            :top_k
+        ]
     return "\n".join([format_context(point.payload) for point in search_results])
