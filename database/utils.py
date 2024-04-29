@@ -1,5 +1,5 @@
 import os
-from typing import List, Union
+from typing import Dict, List, Union
 
 import numpy as np
 import tiktoken
@@ -25,11 +25,13 @@ qdrant_client = QdrantClient(
 openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 
-def create_collection(name: str, vector_size: int = 1536) -> bool:
+def create_collection(
+    name: str, vector_size: int = 1536, distance: Distance = Distance.COSINE
+) -> bool:
     logger.info(f"Creating collection: {name} with vector size: {vector_size}.")
     return qdrant_client.recreate_collection(
         collection_name=name,
-        vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
+        vectors_config=VectorParams(size=vector_size, distance=distance),
     )
 
 
@@ -38,7 +40,7 @@ def delete_collection(collection: str, timeout: int = None) -> bool:
     return qdrant_client.delete_collection(collection_name=collection, timeout=timeout)
 
 
-def get_collection_info(collection: str) -> dict:
+def get_collection_info(collection: str) -> Dict:
     return qdrant_client.get_collection(collection_name=collection).model_dump()
 
 
@@ -70,7 +72,7 @@ def search(
     limit: int = 10,
     query_filter: Filter = None,
     with_vectors: bool = False,
-) -> list:
+) -> List:
     return qdrant_client.search(
         collection_name=collection,
         query_vector=query_vector,

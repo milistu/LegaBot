@@ -1,4 +1,4 @@
-# Law ChatBot Documentation
+# Legal ChatBot Documentation
 
 ## Setting Up the Project
 
@@ -39,7 +39,15 @@ For Windows:
 .venv\Scripts\activate
 ```
 
-### Step 5: Environment variables:
+### Step 5: Initializing Qdrant:
+
+Qdrant is a sophisticated vector database and vector similarity search engine that operates as an API service. It allows for the searching of nearest high-dimensional vectors, transforming embeddings or neural network encoders into comprehensive applications suitable for matching, searching, recommending, among other functionalities.
+
+For setup, you will require two crucial pieces of information: **QDRANT_CLUSTER_URL** and **QDRANT_API_KEY**.
+
+To begin, create a free account with Qdrant by signing up [here](https://cloud.qdrant.io/login). Following account creation, proceed to set up a cluster for your vector database; this is where you'll obtain your **QDRANT_CLUSTER_URL**. Lastly, generate your **QDRANT_API_KEY** by navigating to the "Data Access Control" section within your Qdrant dashboard.
+
+### Step 6: Environment variables:
 For the project to work you need to create a `.env` file in the project root.
 
 The file should look like this:
@@ -48,4 +56,14 @@ QDRANT_CLUSTER_URL=ADD_YOUR_QDRANT_CLUSTER_URL
 QDRANT_API_KEY=ADD_YOUR_QDRANT_API_KEY
 
 OPENAI_API_KEY=ADD_YOUR_OPENAI_API_KEY
+```
+
+## Run the Demo:
+You can run the demo locally simply by executing this command in your terminal:
+```bash
+streamlit run app.py  
+```
+And UI will be available in your browser on the URL:
+```
+http://localhost:8501
 ```
