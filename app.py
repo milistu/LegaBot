@@ -63,7 +63,8 @@ def response_generator(query: str):
                 )
             )
 
-        context = get_context(search_results=search_results)
+        top_k = 15 if len(collections) > 1 else 10
+        context = get_context(search_results=search_results, top_k=top_k)
 
     stream = get_answer(
         client=client,
