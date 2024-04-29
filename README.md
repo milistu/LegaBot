@@ -47,6 +47,13 @@ For setup, you will require two crucial pieces of information: **QDRANT_CLUSTER_
 
 To begin, create a free account with Qdrant by signing up [here](https://cloud.qdrant.io/login). Following account creation, proceed to set up a cluster for your vector database; this is where you'll obtain your **QDRANT_CLUSTER_URL**. Lastly, generate your **QDRANT_API_KEY** by navigating to the "Data Access Control" section within your Qdrant dashboard.
 
+### Step 6: Integrate Langfuse
+
+Langfuse plays a vital role in enhancing the functionality and performance of chatbots by offering observability, analytics, prompt management, and integration support. It is a valuable tool for developers looking to build and optimize chatbot applications powered by Large Language Models.
+
+Here is an [overview](https://langfuse.com/docs) of Langfuse documentation.
+To begin, create a free account on Langfuse by signing up [here](https://cloud.langfuse.com/auth/sign-up). Create a project, generate the necessary keys, and place them in `.env` file.
+
 ### Step 6: Environment variables:
 For the project to work you need to create a `.env` file in the project root.
 
@@ -56,6 +63,10 @@ QDRANT_CLUSTER_URL=ADD_YOUR_QDRANT_CLUSTER_URL
 QDRANT_API_KEY=ADD_YOUR_QDRANT_API_KEY
 
 OPENAI_API_KEY=ADD_YOUR_OPENAI_API_KEY
+
+LANGFUSE_SECRET_KEY=ADD_YOUR_LANGFUSE_SECRET_KEY
+LANGFUSE_PUBLIC_KEY=ADD_YOUR_LANGFUSE_PUBLIC_KEY
+LANGFUSE_HOST=ADD_YOUR_LANGFUSE_HOST
 ```
 
 ## Run the Demo:
