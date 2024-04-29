@@ -1,6 +1,5 @@
 INTRODUCTION_MESSAGE = """
-Zdravo! Ja sam pravni asistent i moj zadatak je da vam pomognem da razumete pravne informacije i procedure. 
-Mogu da vam pružim informacije i savete zasnovane na važećim pravnim članovima: 
+Zdravo! Ja sam pravni asistent i moj zadatak je da Vam pomognem da razumete procedure i odgovorim na pitanja vezana za sledeće propise:
 - [Zakona o radu](https://www.paragraf.rs/propisi/zakon_o_radu.html)
 - [Zakon o porezu na dohodak građana](https://www.paragraf.rs/propisi/zakon-o-porezu-na-dohodak-gradjana.html)
 - [Zakon o zaštiti podataka o ličnosti](https://www.paragraf.rs/propisi/zakon_o_zastiti_podataka_o_licnosti.html)
