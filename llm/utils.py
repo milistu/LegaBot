@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import yaml
+from langfuse.decorators import observe
 from openai import OpenAI
 from openai.types.chat import ChatCompletion
 
@@ -17,6 +18,7 @@ with config_path.open("r") as file:
     config = yaml.safe_load(file)
 
 
+@observe()
 def get_answer(
     client: OpenAI, model: str, temperature: float, messages: list, stream: bool = False
 ) -> ChatCompletion:

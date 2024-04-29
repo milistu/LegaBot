@@ -4,14 +4,18 @@ from pathlib import Path
 
 import streamlit as st
 import yaml
+from dotenv import find_dotenv, load_dotenv
+from langfuse.decorators import observe
 from loguru import logger
 from openai import OpenAI
 
 from database.utils import embed_text, get_context, search
-from llm.prompts import INTRODUCTION_MESSAGE, DEFAULT_CONTEXT
+from llm.prompts import DEFAULT_CONTEXT, INTRODUCTION_MESSAGE
 from llm.utils import get_answer, get_messages
 from router.query_router import semantic_query_router
 from router.router_prompt import DEFAULT_ROUTER_RESPONSE, ROUTER_PROMPT
+
+load_dotenv(find_dotenv())
 
 st.title("Legal ChatBot")
 
@@ -28,6 +32,7 @@ with open(centroid_path, "r", encoding="utf-8") as file:
     centroids = json.loads(file.read())
 
 
+@observe()
 def response_generator(query: str):
     st.session_state.messages = st.session_state.messages[
         -1 * config["openai"]["gpt_model"]["max_conversation"] :
