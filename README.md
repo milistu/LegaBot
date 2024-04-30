@@ -54,7 +54,7 @@ Langfuse plays a vital role in enhancing the functionality and performance of ch
 Here is an [overview](https://langfuse.com/docs) of Langfuse documentation.
 To begin, create a free account on Langfuse by signing up [here](https://cloud.langfuse.com/auth/sign-up). Create a project, generate the necessary keys, and place them in `.env` file.
 
-### Step 6: Environment variables:
+### Step 7: Environment variables:
 For the project to work you need to create a `.env` file in the project root.
 
 The file should look like this:
