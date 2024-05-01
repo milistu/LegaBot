@@ -11,11 +11,10 @@ from qdrant_client.http.models import (
     Distance,
     Filter,
     PointStruct,
+    ScoredPoint,
     UpdateResult,
     VectorParams,
-    ScoredPoint,
 )
-
 
 qdrant_client = QdrantClient(
     url=os.environ.get("QDRANT_CLUSTER_URL"),
