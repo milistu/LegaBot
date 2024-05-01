@@ -19,7 +19,7 @@ Ponudjeni zakoni i njihova objasnjenja su sledeci:
 - Imena zakona mogu biti samo sledeca: zakon_o_radu, zakon_o_porezu_na_dohodak_gradjana, zakon_o_zastiti_podataka_o_licnosti, zakon_o_zastiti_potrosaca, porodicni_zakon.
 - Jedno pitanje korisnika moze da se odnosi na vise zakona.
 - Ukoliko mislis da zakon odgovara korisnikovom pitanju ali nisi 100% siguran onda ga svakako stavi u odgovor.
-- Ukoliko korisnikovo pitanje ne odgovara ni jedno zakonu vrati genericki string: "nema_zakona".
+- Ukoliko korisnikovo pitanje ne odgovara ni jednom zakonu vrati genericki string: "nema_zakona".
 - Zakone uvek moras vracati kao listu stringova bez obzira da li ih je 1 ili vise.
 - Primer JSON odgovora:
 
