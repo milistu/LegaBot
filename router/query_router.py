@@ -1,8 +1,9 @@
 import json
 from typing import Dict, List
-from openai import OpenAI
 
 import numpy as np
+from langfuse.decorators import observe
+from openai import OpenAI
 
 
 def rout_query(centroids: Dict[str, List], query_embedding: List) -> str:
@@ -20,6 +21,7 @@ def rout_query(centroids: Dict[str, List], query_embedding: List) -> str:
     return collection
 
 
+@observe()
 def semantic_query_router(
     client: OpenAI,
     query: str,
