@@ -54,7 +54,7 @@ def response_generator(query: str):
     )
     logger.info(f"Query routed to collections: {collections}")
 
-    if collections == DEFAULT_ROUTER_RESPONSE:
+    if collections[0] == DEFAULT_ROUTER_RESPONSE:
         context = DEFAULT_CONTEXT
     else:
         search_results = []
