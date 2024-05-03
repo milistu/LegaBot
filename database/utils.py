@@ -1,4 +1,3 @@
-import os
 from typing import Dict, List, Union
 
 import numpy as np
@@ -16,42 +15,41 @@ from qdrant_client.http.models import (
     VectorParams,
 )
 
-qdrant_client = QdrantClient(
-    url=os.environ.get("QDRANT_CLUSTER_URL"),
-    api_key=os.environ.get("QDRANT_API_KEY"),
-)
-
-openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-
 
 def create_collection(
-    name: str, vector_size: int = 1536, distance: Distance = Distance.COSINE
+    client: QdrantClient,
+    name: str,
+    vector_size: int = 1536,
+    distance: Distance = Distance.COSINE,
 ) -> bool:
     logger.info(f"Creating collection: {name} with vector size: {vector_size}.")
-    return qdrant_client.recreate_collection(
+    return client.recreate_collection(
         collection_name=name,
         vectors_config=VectorParams(size=vector_size, distance=distance),
     )
 
 
-def delete_collection(collection: str, timeout: int = None) -> bool:
+def delete_collection(
+    client: QdrantClient, collection: str, timeout: int = None
+) -> bool:
     logger.info(f"Deleting collection: {collection}.")
-    return qdrant_client.delete_collection(collection_name=collection, timeout=timeout)
+    return client.delete_collection(collection_name=collection, timeout=timeout)
 
 
-def get_collection_info(collection: str) -> Dict:
-    return qdrant_client.get_collection(collection_name=collection).model_dump()
+def get_collection_info(client: QdrantClient, collection: str) -> Dict:
+    return client.get_collection(collection_name=collection).model_dump()
 
 
-def get_count(collection: str) -> int:
-    return qdrant_client.count(collection_name=collection).count
+def get_count(client: QdrantClient, collection: str) -> int:
+    return client.count(collection_name=collection).count
 
 
 def upsert(
+    client: QdrantClient,
     collection: str,
     points: List[PointStruct],
 ) -> UpdateResult:
-    return qdrant_client.upsert(collection_name=collection, points=points)
+    return client.upsert(collection_name=collection, points=points)
 
 
 def num_tokens_from_string(string: str, model: str) -> int:
@@ -66,13 +64,14 @@ def num_tokens_from_string(string: str, model: str) -> int:
 
 
 def search(
+    client: QdrantClient,
     collection: str,
     query_vector: Union[list, tuple, np.ndarray],
     limit: int = 10,
     query_filter: Filter = None,
     with_vectors: bool = False,
 ) -> List:
-    return qdrant_client.search(
+    return client.search(
         collection_name=collection,
         query_vector=query_vector,
         limit=limit,
@@ -81,14 +80,16 @@ def search(
     )
 
 
-def embed_text(text: Union[str, list], model: str) -> CreateEmbeddingResponse:
+def embed_text(
+    client: OpenAI, text: Union[str, list], model: str
+) -> CreateEmbeddingResponse:
     """
     - Default model (OpenAI): text-embedding-3-small
     - Max input Tokens: 8191
     - TikToken model: cl100k_base
     - Embedding size: 1536
     """
-    response = openai_client.embeddings.create(input=text, model=model)
+    response = client.embeddings.create(input=text, model=model)
     return response
 
 

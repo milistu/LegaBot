@@ -8,6 +8,7 @@ from dotenv import find_dotenv, load_dotenv
 from langfuse.decorators import observe
 from loguru import logger
 from openai import OpenAI
+from qdrant_client import QdrantClient
 
 from database.utils import embed_text, get_context, search
 from llm.prompts import DEFAULT_CONTEXT, INTRODUCTION_MESSAGE
@@ -19,8 +20,12 @@ load_dotenv(find_dotenv())
 
 st.title("Legal ChatBot")
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+qdrant_client = QdrantClient(
+    url=os.environ["QDRANT_CLUSTER_URL"],
+    api_key=os.environ["QDRANT_API_KEY"],
+)
 
+openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 config_path = Path("./config.yaml")
 centroid_path = Path("./router/collection_centroids.json")
@@ -28,6 +33,7 @@ centroid_path = Path("./router/collection_centroids.json")
 with config_path.open("r") as file:
     config = yaml.safe_load(file)
 
+# Delete this
 with open(centroid_path, "r", encoding="utf-8") as file:
     centroids = json.loads(file.read())
 
@@ -41,13 +47,15 @@ def response_generator(query: str):
     # st.session_state.messages.append({"role": "user", "content": query})
 
     embedding_response = embed_text(
-        text=query, model=config["openai"]["embedding_model"]["name"]
+        client=openai_client,
+        text=query,
+        model=config["openai"]["embedding_model"]["name"],
     )
     embedding = embedding_response.data[0].embedding
 
     # Rout query
     collections = semantic_query_router(
-        client=client,
+        client=openai_client,
         query=query,
         prompt=ROUTER_PROMPT,
         temperature=config["openai"]["gpt_model"]["temperature"],
@@ -61,6 +69,7 @@ def response_generator(query: str):
         for collection_name in collections:
             search_results.extend(
                 search(
+                    client=qdrant_client,
                     collection=collection_name,
                     query_vector=embedding,
                     limit=10,
@@ -72,7 +81,7 @@ def response_generator(query: str):
         context = get_context(search_results=search_results, top_k=top_k)
 
     stream = get_answer(
-        client=client,
+        client=openai_client,
         model=config["openai"]["gpt_model"]["name"],
         temperature=config["openai"]["gpt_model"]["temperature"],
         messages=get_messages(
