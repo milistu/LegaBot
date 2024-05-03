@@ -22,7 +22,7 @@ def create_collection(
     vector_size: int = 1536,
     distance: Distance = Distance.COSINE,
 ) -> bool:
-    logger.info(f"Creating collection: {name} with vector size: {vector_size}.")
+    logger.info(f'Creating collection: "{name}" with vector size: {vector_size}.')
     return client.recreate_collection(
         collection_name=name,
         vectors_config=VectorParams(size=vector_size, distance=distance),
@@ -32,12 +32,12 @@ def create_collection(
 def delete_collection(
     client: QdrantClient, collection: str, timeout: int = None
 ) -> bool:
-    logger.info(f"Deleting collection: {collection}.")
+    logger.info(f'Deleting collection: "{collection}".')
     return client.delete_collection(collection_name=collection, timeout=timeout)
 
 
 def get_collection_info(client: QdrantClient, collection: str) -> Dict:
-    return client.get_collection(collection_name=collection).model_dump()
+    return client.get_collection(collection_name=collection)
 
 
 def get_count(client: QdrantClient, collection: str) -> int:
