@@ -1,6 +1,7 @@
 import os
 import unittest
 from pathlib import Path
+from typing import List
 
 import yaml
 from openai import OpenAI
@@ -56,31 +57,29 @@ class RouterTest(unittest.TestCase):
 
     def test_semantic_query_router_sr(self) -> None:
         """Test Serbian queries against the router."""
-        for query, expected in self.test_queries_sr:
-            response = semantic_query_router(
-                client=self.openai_client,
-                query=query,
-                prompt=ROUTER_PROMPT,
-                temperature=self.config["openai"]["gpt_model"]["temperature"],
-            )
+        self._test_query_router(self.test_queries_sr)
+
+    def test_semantic_query_router_en(self) -> None:
+        """Test English queries against the router."""
+        self._test_query_router(self.test_queries_en)
+
+    def _test_query_router(self, test_queries) -> None:
+        """Helper method to test query router functionality."""
+        for query, expected in test_queries:
+            response = self._route_query(query)
             self.assertIsInstance(response, list)
             self.assertEqual(
                 sorted(response), sorted(expected), f"Failed for query: {query}"
             )
 
-    def test_semantic_query_router_en(self) -> None:
-        """Test English queries against the router."""
-        for query, expected in self.test_queries_en:
-            response = semantic_query_router(
-                client=self.openai_client,
-                query=query,
-                prompt=ROUTER_PROMPT,
-                temperature=self.config["openai"]["gpt_model"]["temperature"],
-            )
-            self.assertIsInstance(response, list)
-            self.assertEqual(
-                sorted(response), sorted(expected), f"Failed for query: {query}"
-            )
+    def _route_query(self, query) -> List[str]:
+        """Route the query and return the response."""
+        return semantic_query_router(
+            client=self.openai_client,
+            query=query,
+            prompt=ROUTER_PROMPT,
+            temperature=self.config["openai"]["gpt_model"]["temperature"],
+        )
 
 
 if __name__ == "__main__":
