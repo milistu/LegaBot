@@ -1,70 +1,59 @@
-name: LegaBot Tests
+name: LegaBOt Tests
 
 on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'database/**'
-      - 'router/**'
-      - 'llm/**'
-      - 'app.py'
-      - 'requirements.txt'
-      - '.github/workflows/**'
 
 jobs:
-  test_database:
+  check_changes:
     runs-on: ubuntu-latest
-    if: ${{ contains(github.event.pull_request.changed_files, 'database/') }}
+    outputs:
+      run_database_tests: ${{ steps.filter_files.outputs.database_changed }}
+      run_router_tests: ${{ steps.filter_files.outputs.router_changed }}
+      run_llm_tests: ${{ steps.filter_files.outputs.llm_changed }}
+    
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Detect Changes in Specific Directories
+        id: filter_files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            database/**
+            router/**
+            llm/**
+
+      - name: Set Output Variables for Conditional Steps
+        run: |
+          echo "Setting output variables..."
+          echo "::set-output name=database_changed::${{ contains(steps.filter_files.outputs.all_changed_files, 'database/') }}"
+          echo "::set-output name=router_changed::${{ contains(steps.filter_files.outputs.all_changed_files, 'router/') }}"
+          echo "::set-output name=llm_changed::${{ contains(steps.filter_files.outputs.all_changed_files, 'llm/') }}"
+
+  run_tests:
+    runs-on: ubuntu-latest
+    needs: check_changes
+
+    steps:
+      - uses: actions/checkout@v4
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+
       - name: Install Dependencies
         run: pip install -r requirements.txt
+
       - name: Run Database Tests
+        if: ${{ needs.check_changes.outputs.run_database_tests == 'true' }}
         run: python -m unittest tests/test_database.py
 
-  test_router:
-    runs-on: ubuntu-latest
-    if: ${{ contains(github.event.pull_request.changed_files, 'router/') }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
       - name: Run Router Tests
+        if: ${{ needs.check_changes.outputs.run_router_tests == 'true' }}
         run: python -m unittest tests/test_router.py
 
-  test_llm:
-    runs-on: ubuntu-latest
-    if: ${{ contains(github.event.pull_request.changed_files, 'llm/') }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
       - name: Run LLM Tests
+        if: ${{ needs.check_changes.outputs.run_llm_tests == 'true' }}
         run: python -m unittest tests/test_llm.py
-
-  test_all:
-    runs-on: ubuntu-latest
-    if: ${{ contains(github.event.pull_request.changed_files, 'app.py') }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
-      - name: Run All Tests
-        run: python -m unittest discover -s tests
