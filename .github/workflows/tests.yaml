@@ -1,54 +1,70 @@
 name: LegaBot Tests
 
 on:
-    pull_request:
-        branches:
-            - main
-        paths:
-          - 'database/**'
-          - 'router/**'
-          - 'llm/**'
-          - 'app.py'
-          - 'requirements.txt'
-          - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'database/**'
+      - 'router/**'
+      - 'llm/**'
+      - 'app.py'
+      - 'requirements.txt'
+      - '.github/workflows/**'
 
 jobs:
-    test-specific:
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - folder: 'database/**'
-                      test_path: 'tests/test_database.py'
-                    - folder: 'router/**'
-                      test_path: 'tests/test_router.py'
-                    - folder: 'llm/**'
-                      test_path: 'tests/test_llm.py'
-        
-        steps:
-            - uses: actions/checkout@v3
-            - name: Setup Python
-              uses: actions/setup-python@v4
-              with:
-                python-version: '3.10'
-            - name: Install Dependencies
-              run: pip install -r requirements.txt
-            - name: Run Test
-              run: python -m unittest ${{ matrix.test_path }}
-              if: contains(github.event.pull_request.changed_files, matrix.folder)
+  test_database:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.paths == 'database/**' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run Database Tests
+        run: python -m unittest tests/test_database.py
 
-    test-all:
-        runs-on: ubuntu-latest
-        needs: test-specific
-        if: contains(github.event.pull_request.changed_files, 'app.py')
-        steps:
-            - uses: actions/checkout@v3
-            - name: Setup Python
-              uses: actions/setup-python@v4
-              with:
-                python-version: "3.10"
-            - name: Install Dependencies
-              run: pip install -r requirements.txt
-            - name: Run All Tests
-              run: python -m unittest discover -s tests
+  test_router:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.paths == 'router/**' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run Router Tests
+        run: python -m unittest tests/test_router.py
+
+  test_llm:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.paths == 'llm/**' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run LLM Tests
+        run: python -m unittest tests/test_llm.py
+
+  test_all:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.paths == 'app.py' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run All Tests
+        run: python -m unittest discover -s tests
