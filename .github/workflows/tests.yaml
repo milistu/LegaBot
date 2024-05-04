@@ -4,18 +4,26 @@ on:
     pull_request:
         branches:
             - main
+        paths:
+          - 'database/**'
+          - 'router/**'
+          - 'llm/**'
+          - 'app.py'
+          - 'requirements.txt'
+          - '.github/workflows/**'
 
 jobs:
     test-specific:
         runs-on: ubuntu-latest
         strategy:
+            fail-fast: false
             matrix:
                 include:
-                    - folder: 'database'
+                    - folder: 'database/**'
                       test_path: 'tests/test_database.py'
-                    - folder: 'router'
+                    - folder: 'router/**'
                       test_path: 'tests/test_router.py'
-                    - folder: 'llm'
+                    - folder: 'llm/**'
                       test_path: 'tests/test_llm.py'
         
         steps:
