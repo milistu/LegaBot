@@ -1,4 +1,4 @@
-name: LegaBOt Tests
+name: LegaBot Tests
 
 on:
   pull_request:
@@ -6,54 +6,23 @@ on:
       - main
 
 jobs:
-  check_changes:
-    runs-on: ubuntu-latest
-    outputs:
-      run_database_tests: ${{ steps.filter_files.outputs.database_changed }}
-      run_router_tests: ${{ steps.filter_files.outputs.router_changed }}
-      run_llm_tests: ${{ steps.filter_files.outputs.llm_changed }}
-    
+  # ------------------------------------------------------------------------------------------------------------------------------------------------
+  # Event `pull_request`: Compare the last commit of the main branch or last remote commit of the PR branch -> to the current commit of a PR branch.
+  # ------------------------------------------------------------------------------------------------------------------------------------------------
+  changed_files:
+    runs-on: ubuntu-latest  # windows-latest || macos-latest
+    name: Test changed-files
     steps:
       - uses: actions/checkout@v4
-
-      - name: Detect Changes in Specific Directories
-        id: filter_files
+      - name: Get changed files in the docs folder
+        id: changed-files-specific
         uses: tj-actions/changed-files@v44
         with:
-          files: |
-            database/**
-            router/**
-            llm/**
+          files: router/** # *.{js,html}  # Alternatively using: `docs/**`
+          # files_ignore: docs/static.js
 
-      - name: Set Output Variables for Conditional Steps
-        run: |
-          echo "Setting output variables..."
-          echo "::set-output name=database_changed::${{ contains(steps.filter_files.outputs.all_changed_files, 'database/') }}"
-          echo "::set-output name=router_changed::${{ contains(steps.filter_files.outputs.all_changed_files, 'router/') }}"
-          echo "::set-output name=llm_changed::${{ contains(steps.filter_files.outputs.all_changed_files, 'llm/') }}"
-
-  run_tests:
-    runs-on: ubuntu-latest
-    needs: check_changes
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run Database Tests
-        if: ${{ needs.check_changes.outputs.run_database_tests == 'true' }}
-        run: python -m unittest tests/test_database.py
-
-      - name: Run Router Tests
-        if: ${{ needs.check_changes.outputs.run_router_tests == 'true' }}
+      - name: Run step if any file(s) in the router folder change
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files-specific.outputs.all_changed_files }}
         run: python -m unittest tests/test_router.py
-
-      - name: Run LLM Tests
-        if: ${{ needs.check_changes.outputs.run_llm_tests == 'true' }}
-        run: python -m unittest tests/test_llm.py
