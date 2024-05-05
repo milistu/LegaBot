@@ -29,6 +29,10 @@ jobs:
         if: steps.changed-files-router.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files-router.outputs.all_changed_files }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
         run: python -m unittest tests/test_router.py
 
   test_database:
@@ -52,4 +56,7 @@ jobs:
         if: steps.changed-files-database.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files-database.outputs.all_changed_files }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+          QDRANT_CLUSTER_URL: ${{ vars.QDRANT_CLUSTER_URL }}
         run: python -m unittest tests/test_database.py
