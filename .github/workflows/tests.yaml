@@ -6,26 +6,41 @@ on:
       - main
 
 jobs:
-  # ------------------------------------------------------------------------------------------------------------------------------------------------
-  # Event `pull_request`: Compare the last commit of the main branch or last remote commit of the PR branch -> to the current commit of a PR branch.
-  # ------------------------------------------------------------------------------------------------------------------------------------------------
   changed_files:
     runs-on: ubuntu-latest  # windows-latest || macos-latest
-    name: Test changed-files
+    name: Test Router
     steps:
       - uses: actions/checkout@v4
-      - name: Get changed files in the docs folder
-        id: changed-files-specific
+      
+      # Test Router
+      - name: Get changed files in the router folder
+        id: changed-files-router
         uses: tj-actions/changed-files@v44
         with:
-          files: router/** # *.{js,html}  # Alternatively using: `docs/**`
+          files: router/**
           # files_ignore: docs/static.js
 
       - name: Run step if any file(s) in the router folder change
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        if: steps.changed-files-router.outputs.any_changed == 'true'
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files-specific.outputs.all_changed_files }}
+          ALL_CHANGED_FILES: ${{ steps.changed-files-router.outputs.all_changed_files }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           pip install -r requirements.txt 
           python -m unittest tests/test_router.py
+        
+      # Test Database
+      - name: Get changed files in the database folder
+        id: changed-files-database
+        uses: tj-actions/changed-files@v44
+        with:
+          files: database/**
+
+      - name: Run step if any file(s) in the database folder change
+        if: steps.changed-files-database.outputs.any_changed == 'true'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files-database.outputs.all_changed_files }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          pip install -r requirements.txt 
+          python -m unittest tests/test_database.py
