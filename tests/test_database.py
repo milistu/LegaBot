@@ -25,7 +25,7 @@ from database.utils import (
 class DatabaseTests(unittest.TestCase):
 
     def setUp(self) -> None:
-        print(f"TESTING QDRANT URL: {os.environ["QDRANT_CLUSTER_URL"]}")
+        print(f"TESTING QDRANT URL: {os.environ['QDRANT_CLUSTER_URL']}")
         self.qdrant_client = QdrantClient(
             url=os.environ["QDRANT_CLUSTER_URL"],
             api_key=os.environ["QDRANT_API_KEY"],
