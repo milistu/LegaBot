@@ -65,7 +65,7 @@ class DatabaseTests(unittest.TestCase):
         ]
 
     def test_01_create_collection(self) -> None:
-        print(f"TESTING QDRANT URL: {os.environ["QDRANT_CLUSTER_URL"]}")
+        print(f"TESTING QDRANT URL: {os.environ['QDRANT_CLUSTER_URL']}")
         result = create_collection(
             client=self.qdrant_client,
             name=self.collection_name,
