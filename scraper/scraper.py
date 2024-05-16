@@ -38,14 +38,18 @@ def run_scraper(soup: BeautifulSoup, url: str) -> List[Dict]:
     article_texts = []
     article_link = None
 
+    # Find all <p> elements in the HTML
     elements = soup.find_all("p")
     for el in elements:
+        # Determine the class name of the element
         class_name = (
             "clan" if check_class_element(element=el, class_name="clan") else "normal"
         )
 
+        # If the element is a title (class "clan"), start a new article
         if class_name == "clan":
             if article_title:
+                # Save the previous article
                 law_articles.append(
                     {
                         "title": article_title,
@@ -54,13 +58,17 @@ def run_scraper(soup: BeautifulSoup, url: str) -> List[Dict]:
                     }
                 )
                 article_texts = []
+            # Get the article title
             article_title = el.get_text(strip=True)
 
+            # Get the link to the article section
             name_attr = el.find("a").get("name") if el.find("a") else None
             article_link = f"{url}#{name_attr}" if name_attr else None
+        # If the element is part of an article's text, add it to the current article
         elif article_title and class_name == "normal":
             article_texts.append(el.get_text(strip=True))
 
+    # Save the last article
     if article_title and article_texts:
         law_articles.append(
             {"title": article_title, "texts": article_texts, "link": article_link}
