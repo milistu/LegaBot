@@ -23,12 +23,5 @@ python scraper/scraper.py --file scraper/urls.txt --output-dir scraper/laws
 ```
 > ⚠️ _**Note**: Ensure you are in the root directory of the project before running the script._
 
-## Logging
-The script logs the following information:
-- Successful URL fetches
-- Successful data scraping
-- Successful data saving
-- Any errors encountered during the process
-
 ## Output
 The output JSON files will be saved in the specified output directory, with each file named after the corresponding URL's stem.
