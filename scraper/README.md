@@ -16,8 +16,12 @@ python scraper/scraper.py --file scraper/urls.txt --output-dir laws_test
 - `--output-dir`: Directory to save the JSON files (default is scraper/laws).
 
 ## Example
-To scrape law articles from a list of URLs in urls.txt and save the output in the `scraper/laws` directory:
+To scrape law articles from a single URL (example: Serbian Labor Law) and save the output in the `scraper/laws` directory:
+```bash
+python scraper/scraper.py --url "https://www.paragraf.rs/propisi/zakon_o_radu.html" --output-dir scraper/laws
+```
 
+To scrape law articles from a list of URLs in urls.txt and save the output in the `scraper/laws` directory:
 ```bash
 python scraper/scraper.py --file scraper/urls.txt --output-dir scraper/laws
 ```
