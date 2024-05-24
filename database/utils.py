@@ -152,9 +152,10 @@ def prepare_for_embedding(
     jobs = [
         {
             "model": model,
-            "input": f"{sample['title']}: {' '.join(sample['texts'])}",
-            "title": sample["title"],
             "id": id,
+            "title": sample["title"],
+            "link": sample["link"],
+            "input": f"{sample['title']}: {' '.join(sample['texts'])}",
         }
         for id, sample in enumerate(scraped_data)
     ]
@@ -239,6 +240,7 @@ def run_api_request_processor(
         logger.error("Error:", result.stderr)
 
 
+# Eliminate this or make it more general
 def validate_path(path: Path) -> None:
     if not isinstance(path, Path) or not path.exists():
         logger.error(f'"{path}" must be a valid Path object')
@@ -285,3 +287,75 @@ def create_embeddings(
         run_api_request_processor(
             requests_filepath=requests_filepath, save_path=processed_filepath
         )
+
+
+# def load_embeddings(path: Path) -> List[Dict]:
+#     """
+#     Load embeddings from a JSON lines file.
+
+#     Args:
+#         path (Path): The path to the JSON lines file containing embeddings.
+
+#     Returns:
+#         List[Dict[str, any]]: A list of dictionaries representing the embeddings.
+#     Raises:
+#         FileNotFoundError: If the file does not exist.
+#         IOError: If there is an error reading the file.
+#         json.JSONDecodeError: If there is an error parsing the JSON.
+#     """
+#     if not path.exists():
+#         logger.error(f"File: {path} does not exist.")
+#         raise FileNotFoundError(f"File: {path} does not exist.")
+
+#     try:
+#         with open(path, "r", encoding="utf-8") as file:
+#             return [json.loads(line) for line in file]
+#     except (IOError, json.JSONDecodeError) as e:
+#         logger.error(f"Error reading or parsing file: {e}")
+#         raise
+
+
+def load_and_process_embeddings(path: Path) -> List[PointStruct]:
+    """
+    Load embeddings from a JSON lines file and process them into data points.
+
+    Args:
+        path (Path): The path to the JSON lines file containing embeddings.
+
+    Returns:
+        List[PointStruct]: A list of PointStruct objects containing the processed data.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+        IOError: If there is an error reading the file.
+        json.JSONDecodeError: If there is an error parsing the JSON.
+    """
+    if not path.exists():
+        logger.error(f"File: {path} does not exist.")
+        raise FileNotFoundError(f"File: {path} does not exist.")
+
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            embedding_data = [json.loads(line) for line in file]
+    except (IOError, json.JSONDecodeError) as e:
+        logger.error(f"Error reading or parsing file: {e}")
+        raise
+
+    points = []
+    for item in embedding_data:
+        try:
+            points.append(
+                PointStruct(
+                    id=item[0]["id"],
+                    vector=item[1]["data"][0]["embedding"],
+                    payload={
+                        "title": item[0]["title"],
+                        "text": item[0]["input"],
+                        "link": item[0]["link"],
+                    },
+                )
+            )
+        except KeyError as e:
+            logger.error(f"Missing key in embedded data: {e}")
+            continue
+    return points
