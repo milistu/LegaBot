@@ -56,6 +56,7 @@ def response_generator(query: str):
     # Rout query
     collections = semantic_query_router(
         client=openai_client,
+        model=config["openai"]["gpt_model"]["router"],
         query=query,
         prompt=ROUTER_PROMPT,
         temperature=config["openai"]["gpt_model"]["temperature"],
@@ -82,7 +83,7 @@ def response_generator(query: str):
 
     stream = get_answer(
         client=openai_client,
-        model=config["openai"]["gpt_model"]["name"],
+        model=config["openai"]["gpt_model"]["llm"],
         temperature=config["openai"]["gpt_model"]["temperature"],
         messages=get_messages(
             context=context, query=query, conversation=st.session_state.messages

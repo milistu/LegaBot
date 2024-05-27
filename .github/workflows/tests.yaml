@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  changed_files:
+  test_router:
     runs-on: ubuntu-latest  # windows-latest || macos-latest
     name: Test Router
     steps:
@@ -19,28 +19,42 @@ jobs:
         with:
           files: router/**
           # files_ignore: docs/static.js
+    
+      - name: Install Dependencies
+        if: steps.changed-files-router.outputs.any_changed == 'true'
+        run: pip install -r requirements.txt
 
-      - name: Run step if any file(s) in the router folder change
+      - name: Run Tests if any file(s) in the router folder change
         if: steps.changed-files-router.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files-router.outputs.all_changed_files }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          pip install -r requirements.txt 
-          python -m unittest tests/test_router.py
-        
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_HOST: ${{ secrets.LANGFUSE_HOST }}
+        run: python -m unittest tests/test_router.py
+
+  test_database:
+    runs-on: ubuntu-latest  # windows-latest || macos-latest
+    name: Test Database
+    steps:
+      - uses: actions/checkout@v4
       # Test Database
       - name: Get changed files in the database folder
         id: changed-files-database
         uses: tj-actions/changed-files@v44
         with:
           files: database/**
+        
+      - name: Install Dependencies
+        if: steps.changed-files-database.outputs.any_changed == 'true'
+        run: pip install -r requirements.txt
 
-      - name: Run step if any file(s) in the database folder change
+      - name: Run Tests if any file(s) in the database folder change
         if: steps.changed-files-database.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files-database.outputs.all_changed_files }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          pip install -r requirements.txt 
-          python -m unittest tests/test_database.py
+          QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+          QDRANT_CLUSTER_URL: ${{ secrets.QDRANT_CLUSTER_URL }}
+        run: python -m unittest tests/test_database.py

@@ -1,4 +1,10 @@
-# Legal ChatBot Documentation
+# Legal ChatBot 👩‍⚖️
+
+Legal ChatBot is an innovative project designed to assist users in navigating the complex world of legal documents. 
+
+Utilizing a combination of RAG (Retrieval-Augmented Generation) technology and a deep knowledge base of law articles, this bot can intelligently reference relevant legal texts during interactions. It offers an interactive platform for querying legal information, making it a valuable tool for professionals, students, and anyone needing quick insights into legal matters. 
+
+Setup involves **Poetry** for dependency management, **Qdrant** for vector database functionality, and **Langfuse** for enhancing chatbot performance, ensuring a robust and efficient user experience.
 
 ## Setting Up the Project
 
