@@ -242,7 +242,7 @@ def run_api_request_processor(
 
 # Eliminate this or make it more general
 def validate_path(path: Path) -> None:
-    if not isinstance(path, Path) or not path.exists():
+    if not isinstance(path, Path):
         logger.error(f'"{path}" must be a valid Path object')
         raise ValueError(f'"{path}" must be a valid Path object')
     path.mkdir(parents=True, exist_ok=True)
@@ -287,32 +287,6 @@ def create_embeddings(
         run_api_request_processor(
             requests_filepath=requests_filepath, save_path=processed_filepath
         )
-
-
-# def load_embeddings(path: Path) -> List[Dict]:
-#     """
-#     Load embeddings from a JSON lines file.
-
-#     Args:
-#         path (Path): The path to the JSON lines file containing embeddings.
-
-#     Returns:
-#         List[Dict[str, any]]: A list of dictionaries representing the embeddings.
-#     Raises:
-#         FileNotFoundError: If the file does not exist.
-#         IOError: If there is an error reading the file.
-#         json.JSONDecodeError: If there is an error parsing the JSON.
-#     """
-#     if not path.exists():
-#         logger.error(f"File: {path} does not exist.")
-#         raise FileNotFoundError(f"File: {path} does not exist.")
-
-#     try:
-#         with open(path, "r", encoding="utf-8") as file:
-#             return [json.loads(line) for line in file]
-#     except (IOError, json.JSONDecodeError) as e:
-#         logger.error(f"Error reading or parsing file: {e}")
-#         raise
 
 
 def load_and_process_embeddings(path: Path) -> List[PointStruct]:
