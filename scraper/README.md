@@ -1,4 +1,4 @@
-# Amazon Laws Scraper
+# Scraper
 
 This script scrapes law articles from a list of URLs and saves them as JSON files.
 
