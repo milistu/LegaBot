@@ -1,11 +1,11 @@
 openai:
-  embedding_model:
-    name:  "text-embedding-3-small"
+  embeddings:
+    model:  "text-embedding-3-small"
     dimensions: 1536
-  gpt_model:
-    llm:  "gpt-4o"
-    router:  "gpt-3.5-turbo"
+  chat:
+    model:  "gpt-4-turbo-preview"
     temperature: 0
     max_conversation: 100
-collection:
-  name: "labor_law"
+  router:
+    model: "gpt-3.5-turbo"
+    temperature: 0
