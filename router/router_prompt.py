@@ -15,14 +15,10 @@ Ponudjeni zakoni i njihova objasnjenja su sledeci:
  - Korisnikovo pitanje ne odgovara ni jednom zakonu.
 
 **FORMAT ODGOVORA:**
-- Odgovor vratiti u JSON formatu.
-- Odgovor treba da sadrzi samo JSON output, bez dodataka.
-- Odgovor mora da bude string koji moze da se ucita uz pmoc komande json.loads().
+- Odgovor vratiti u JSON formatu koji moze da se ucita sa json.loads().
 - Imena zakona mogu biti samo sledeca: zakon_o_radu, zakon_o_porezu_na_dohodak_gradjana, zakon_o_zastiti_podataka_o_licnosti, zakon_o_zastiti_potrosaca, porodicni_zakon, nema_zakona.
 - Jedno pitanje korisnika moze da se odnosi na vise zakona.
-- Ukoliko mislis da zakon odgovara korisnikovom pitanju ali nisi 100% siguran onda ga svakako stavi u odgovor.
 - Ukoliko korisnikovo pitanje ne odgovara ni jednom zakonu vrati listu sa generickim stringom: ["nema_zakona"].
-- Zakone uvek moras vracati kao listu stringova bez obzira da li ih je 1 ili vise.
 - Primer JSON odgovora:
 
 {{
