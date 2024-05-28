@@ -17,6 +17,7 @@ from database.utils import (
 
 
 def main(args: argparse.Namespace) -> None:
+    """Main function to create embeddings and vector database."""
     logger.info("Creating embeddings.")
     create_embeddings(
         scraped_dir=args.scraped_dir,
@@ -34,7 +35,7 @@ def main(args: argparse.Namespace) -> None:
     for path in tqdm(data_paths, total=len(data_paths), desc="Creating collections"):
         # Check if this is necessary
         collection_name = path.stem.replace("-", "_")
-        collection_name = collection_name + "_TESTIC"
+        collection_name = collection_name
         points = load_and_process_embeddings(path=path)
 
         create_collection(client=qdrant_client, name=collection_name)

@@ -26,6 +26,7 @@ def create_collection(
     vector_size: int = 1536,
     distance: Distance = Distance.COSINE,
 ) -> bool:
+    """Create a collection in Qdrant."""
     logger.info(f'Creating collection: "{name}" with vector size: {vector_size}.')
     return client.recreate_collection(
         collection_name=name,
@@ -53,6 +54,7 @@ def upsert(
     collection: str,
     points: List[PointStruct],
 ) -> UpdateResult:
+    """Upsert data points into a Qdrant collection."""
     return client.upsert(collection_name=collection, points=points)
 
 
@@ -88,10 +90,7 @@ def embed_text(
     client: OpenAI, text: Union[str, list], model: str
 ) -> CreateEmbeddingResponse:
     """
-    - Default model (OpenAI): text-embedding-3-small
-    - Max input Tokens: 8191
-    - TikToken model: cl100k_base
-    - Embedding size: 1536
+    Create embeddings using OpenAI API.
     """
     response = client.embeddings.create(input=text, model=model)
     return response
