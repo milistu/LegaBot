@@ -3,11 +3,11 @@ import unittest
 from pathlib import Path
 from typing import List
 
-import yaml
 from openai import OpenAI
 
 from router.query_router import semantic_query_router
 from router.router_prompt import ROUTER_PROMPT
+from utils import load_config_from_yaml
 
 
 class RouterTest(unittest.TestCase):
@@ -15,8 +15,7 @@ class RouterTest(unittest.TestCase):
     def setUp(self) -> None:
         # Load configuration
         config_path = Path("./config.yaml")
-        with config_path.open("r") as file:
-            self.config = yaml.safe_load(file)
+        self.config = load_config_from_yaml(yaml_file_path=config_path)
 
         # Initialize OpenAI client
         self.openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -30,6 +29,7 @@ class RouterTest(unittest.TestCase):
             (
                 "Kako da zaštitim svoje podatke na internetu?",
                 ["zakon_o_zastiti_podataka_o_licnosti"],
+                # ["zakon_o_zastiti_podataka_o_licnosti", "zakon_o_zastiti_potrosaca"],
             ),
             (
                 "Šta su moja prava kao potrošača i lica na koje se podaci odnose kada kupujem online?",
@@ -46,6 +46,7 @@ class RouterTest(unittest.TestCase):
             (
                 "How can I protect my data online?",
                 ["zakon_o_zastiti_podataka_o_licnosti"],
+                # ["zakon_o_zastiti_podataka_o_licnosti", "zakon_o_zastiti_potrosaca"],
             ),
             (
                 "What are my rights as a consumer and data subject when shopping online?",
@@ -78,7 +79,8 @@ class RouterTest(unittest.TestCase):
             client=self.openai_client,
             query=query,
             prompt=ROUTER_PROMPT,
-            temperature=self.config["openai"]["gpt_model"]["temperature"],
+            model=self.config.openai.router.model,
+            temperature=self.config.openai.router.temperature,
         )
 
 
