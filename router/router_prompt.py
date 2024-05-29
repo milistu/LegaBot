@@ -8,21 +8,18 @@ Ponudjeni zakoni i njihova objasnjenja su sledeci:
 - zakon_o_zastiti_podataka_o_licnosti
  - Zakon o zaštiti podataka o ličnosti štiti prava građana na privatnost njihovih ličnih podataka. Obavezuje sve organizacije koje obrađuju lične podatke da to čine transparentno, zakonito i u skladu sa definisanim svrhama. Zakon definiše prava lica na pristup, ispravku, brisanje i prenos svojih podataka o ličnosti. Takođe, ustanovljava Poverenika za informacije od javnog značaja i zaštitu podataka o ličnosti kao regulatorno telo koje nadzire primenu zakona.
 - zakon_o_zastiti_potrosaca
- - Zakon o zaštiti potrošača osigurava da potrošači u Srbiji imaju prava na sigurnost i kvalitet proizvoda i usluga. Zakon propisuje obaveze trgovaca u pogledu pravilnog informisanja potrošača o proizvodima, uslugama, cenama i pravu na reklamaciju. Takođe, uključuje prava potrošača na odustanak od kupovine unutar određenog roka i prava u slučaju neispravnosti proizvoda. 
+ - Zakon o zaštiti potrošača osigurava da potrošači u Srbiji imaju prava na sigurnost i kvalitet proizvoda i usluga. Zakon propisuje obaveze trgovaca u pogledu pravilnog informisanja potrošača o proizvodima, uslugama, cenama i pravu na reklamaciju. Takođe, uključuje prava potrošača na odustanak od kupovine unutar određenog roka i prava u slučaju neispravnosti proizvoda kao i prava koja su vezana za ugovore na daljinu. 
 - porodicni_zakon
  - Porodični zakon reguliše pravne odnose unutar porodice, uključujući brak, roditeljstvo, starateljstvo, hraniteljstvo i usvojenje. Zakon definiše prava i obaveze bračnih partnera, kao i prava dece i roditeljske odgovornosti. Takođe se bavi pitanjima nasleđivanja i alimentacije. 
 - nema_zakona
  - Korisnikovo pitanje ne odgovara ni jednom zakonu.
 
 **FORMAT ODGOVORA:**
-- Odgovor vratiti u JSON formatu.
-- Odgovor treba da sadrzi samo JSON output, bez dodataka.
-- Odgovor mora da bude string koji moze da se ucita uz pmoc komande json.loads().
+- Odgovor vratiti u JSON formatu koji moze da se učita sa json.loads().
 - Imena zakona mogu biti samo sledeca: zakon_o_radu, zakon_o_porezu_na_dohodak_gradjana, zakon_o_zastiti_podataka_o_licnosti, zakon_o_zastiti_potrosaca, porodicni_zakon, nema_zakona.
 - Jedno pitanje korisnika moze da se odnosi na vise zakona.
-- Ukoliko mislis da zakon odgovara korisnikovom pitanju ali nisi 100% siguran onda ga svakako stavi u odgovor.
+- Vrati zakone koji mogu da pomognu prilikom generisanja odgovora.
 - Ukoliko korisnikovo pitanje ne odgovara ni jednom zakonu vrati listu sa generickim stringom: ["nema_zakona"].
-- Zakone uvek moras vracati kao listu stringova bez obzira da li ih je 1 ili vise.
 - Primer JSON odgovora:
 
 {{
