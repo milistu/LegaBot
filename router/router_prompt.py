@@ -30,4 +30,37 @@ Ponudjeni zakoni i njihova objasnjenja su sledeci:
 {query}
 """
 
+ROUTER_PROMPT_ENG = """
+Your task is to decide which law or laws are needed to answer the user's question based on the given question.
+The provided laws and their explanations are as follows:
+- labor_law
+ - The Labor Law of the Republic of Serbia regulates labor relations between employees and employers. It defines the rights and obligations of both parties, including working hours, leaves, and conditions for termination of employment contracts. The law also covers rules related to employment contracts, minimum wage, and workplace safety measures. Additionally, it provides mechanisms for resolving labor disputes.
+- personal_income_tax_law
+ - The Personal Income Tax Law regulates the taxation of citizens' income, including salaries, self-employment income, capital income, real estate income, and more. The law details which incomes are taxable, as well as tax rates, bases, certain tax exemptions, and reliefs for specific categories of citizens.
+- personal_data_protection_law
+ - The Personal Data Protection Law protects citizens' rights to the privacy of their personal data. It obligates all organizations processing personal data to do so transparently, legally, and in accordance with defined purposes. The law defines the rights of individuals to access, correct, delete, and transfer their personal data. It also establishes the Commissioner for Information of Public Importance and Personal Data Protection as the regulatory body overseeing the law's implementation.
+- consumer_protection_law
+ - The Consumer Protection Law ensures that consumers in Serbia have rights to the safety and quality of products and services. The law prescribes the obligations of traders regarding the proper information of consumers about products, services, prices, and the right to file complaints. It also includes consumers' rights to withdraw from a purchase within a specified period and rights in case of defective products as well as rights related to distance contracts.
+- family_law
+ - The Family Law regulates legal relations within the family, including marriage, parenthood, guardianship, foster care, and adoption. The law defines the rights and obligations of spouses, as well as children's rights and parental responsibilities. It also addresses issues of inheritance and alimony.
+- no_law
+ - The user's question does not correspond to any law.
+
+**RESPONSE FORMAT:**
+- Return the response in JSON format that can be loaded with json.loads().
+- The names of the laws can only be the following: labor_law, personal_income_tax_law, personal_data_protection_law, consumer_protection_law, family_law, no_law.
+- A user's question can relate to multiple laws.
+- Return the laws that can help in generating the answer.
+- If the user's question does not correspond to any law, return a list with the generic string: ["no_law"].
+- Example JSON response:
+
+{{
+    "response": ["law_name"]
+}}
+
+**USER'S QUESTION:**
+{query}
+"""
+
+
 DEFAULT_ROUTER_RESPONSE = "nema_zakona"
