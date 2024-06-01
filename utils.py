@@ -60,14 +60,14 @@ class Config(BaseModel):
     openai: OpenAIConfig
 
 
-def load_config_from_yaml(yaml_file_path: str = "./config.yaml") -> Config:
+def load_config(yaml_file_path: str = "./config.yaml") -> Config:
     with open(yaml_file_path, "r") as file:
         yaml_content = yaml.safe_load(file)
     return Config(**yaml_content)
 
 
 @st.cache_resource
-def init_clients() -> Tuple[OpenAI, QdrantClient]:
+def initialize_clients() -> Tuple[OpenAI, QdrantClient]:
     """
     Initializes and returns the clients for OpenAI and Qdrant services.
 

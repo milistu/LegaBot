@@ -7,7 +7,7 @@ from openai import OpenAI
 
 from router.query_router import semantic_query_router
 from router.router_prompt import ROUTER_PROMPT
-from utils import load_config_from_yaml
+from utils import load_config
 
 
 class RouterTest(unittest.TestCase):
@@ -15,7 +15,7 @@ class RouterTest(unittest.TestCase):
     def setUp(self) -> None:
         # Load configuration
         config_path = Path("./config.yaml")
-        self.config = load_config_from_yaml(yaml_file_path=config_path)
+        self.config = load_config(yaml_file_path=config_path)
 
         # Initialize OpenAI client
         self.openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
