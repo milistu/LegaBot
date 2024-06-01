@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sais-hackathon"
+name = "LegaBot"
 version = "0.1.0"
 description = ""
 authors = ["Milutin-S <studen.m98@gmail.com>"]
