@@ -1,5 +1,7 @@
 # Legal ChatBot 👩‍⚖️
 
+![LegaBot Logo](https://github.com/milistu/LegaBot/blob/main/assets/Legabot-Light-Vertical.svg "LegaBot Logo")
+
 Legal ChatBot is an innovative project designed to assist users in navigating the complex world of legal documents. 
 
 Utilizing a combination of RAG (Retrieval-Augmented Generation) technology and a deep knowledge base of law articles, this bot can intelligently reference relevant legal texts during interactions. It offers an interactive platform for querying legal information, making it a valuable tool for professionals, students, and anyone needing quick insights into legal matters. 
