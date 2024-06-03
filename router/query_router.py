@@ -1,38 +1,21 @@
-import json
-from typing import List
+from typing import Dict, List
 
-from langfuse.decorators import observe
-from openai import OpenAI
+from router.router_prompt import ROUTER_PROMPT, USER_QUERY
 
 
-@observe()
-def semantic_query_router(
-    client: OpenAI,
+def formate_messages_router(
     query: str,
-    prompt: str,
-    temperature: float,
-    model: str = "gpt-3.5-turbo",
-) -> List[str]:
+) -> List[Dict]:
     """
-    Routes a semantic query to the appropriate collections using OpenAI's API.
+    Prepare the list of messages for the llm model.
 
     Args:
-        client (OpenAI): The OpenAI client instance.
-        query (str): The query string to be routed.
-        prompt (str): The prompt template to be used for the query.
-        temperature (float): The temperature setting for the model's response.
-        model (str, optional): The model to be used. Defaults to "gpt-3.5-turbo".
+        query (str): The user's query.
 
     Returns:
-        List[str]: A list of collections that are relevant to the query.
+        List[Dict]: The list of messages formatted for the llm model.
     """
-    # Create the completion request to the OpenAI API
-    response = client.chat.completions.create(
-        model=model,
-        response_format={"type": "json_object"},
-        messages=[{"role": "system", "content": prompt.format(query=query)}],
-        temperature=temperature,
-    )
-    # Parse the response to extract the collections
-    collections = json.loads(response.choices[0].message.content)["response"]
-    return collections
+    return [
+        {"role": "system", "content": ROUTER_PROMPT},
+        {"role": "user", "content": USER_QUERY.format(query=query)},
+    ]
