@@ -10,6 +10,7 @@ from utils import (
     QUERY_SUGGESTIONS,
     AUTHORS,
     LOGO_URL,
+    LOGO_TEXT_URL,
 )
 
 # Load environment variables from the .env file.
@@ -26,7 +27,7 @@ openai_client, qdrant_client = initialize_clients()
 config = load_config()
 
 # Display the logo and set up the sidebar with useful information and links.
-st.logo(LOGO_URL, icon_image=LOGO_URL)
+st.logo(LOGO_TEXT_URL, icon_image=LOGO_URL)
 with st.sidebar:
     st.subheader("💡 Query Suggestions")
     with st.container(border=True, height=200):
@@ -50,7 +51,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # Handle user input and generate responses.
-if prompt := st.chat_input("Postavi pitanje iz prava..."):
+if prompt := st.chat_input("Postavi pitanje vezano za pravo..."):
     # Append user message to session state.
     st.session_state.messages.append({"role": "user", "content": prompt})
 
