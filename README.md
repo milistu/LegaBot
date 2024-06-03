@@ -1,6 +1,6 @@
 # Legal ChatBot 👩‍⚖️
 
-![LegaBot Logo](https://github.com/milistu/LegaBot/blob/main/assets/Legabot-Light-Vertical.svg "LegaBot Logo")
+![LegaBot Logo](https://github.com/milistu/LegaBot/blob/main/assets/Legabot-Dark-Vertical.svg "LegaBot Dark Logo")
 
 Legal ChatBot is an innovative project designed to assist users in navigating the complex world of legal documents. 
 
