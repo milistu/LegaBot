@@ -15,7 +15,9 @@ from llm.utils import get_answer, get_messages
 from router.query_router import semantic_query_router
 from router.router_prompt import DEFAULT_ROUTER_RESPONSE, ROUTER_PROMPT
 
-LOGO_URL = "https://www.app.nl/wp-content/uploads/2019/01/Blendle.png"
+LOGO_URL = "assets/Legabot-Logomark.svg"
+LOGO_TEXT_URL = "assets/Legabot-Light-Horizontal.svg"
+TEXT_URL = "assets/Legabot-Dark-Typography.svg"
 
 WARNING_MESSAGE = """
 _Please note that LegaBot may make **mistakes**. For critical legal information, always **verify** with a qualified legal professional. LegaBot is here to assist, not replace professional legal advice._
@@ -24,8 +26,10 @@ _Please note that LegaBot may make **mistakes**. For critical legal information,
 QUERY_SUGGESTIONS = """
 Na koliko dana godisnjeg imam pravo?\n
 Da li smem da koristim porodiljsko bolovanje zene umesto nje?\n
-Koliko poreza treba da platim ako sam freelancer?\n
-Da li mogu da trazim da se izbrisu moji podaci sa sajta ako ih nisam odborio?
+Koji porez placam ako sam preduzetnik?\n
+Da li mogu da trazim da se izbrisu moji podaci sa sajta ako ih nisam odborio?\n
+U kom roku mogu da trazim zamenu proizvoda kojim nisam zadovoljan?\n
+Kome pripadaju pokloni koje smo muz i ja dobili na vencanju?
 """
 
 AUTHORS = """
