@@ -1,4 +1,5 @@
 ROUTER_PROMPT = """
+**INSTRUKCIJE:**
 Tvoj zadatak je da na osnovu datog pitanja korisnika odlucis koji zakon ili zakoni su potrebni da bi se odgovorilo na korisnikovo pitanje.
 Ponudjeni zakoni i njihova objasnjenja su sledeci:
 - zakon_o_radu
@@ -20,12 +21,14 @@ Ponudjeni zakoni i njihova objasnjenja su sledeci:
 - Jedno pitanje korisnika moze da se odnosi na vise zakona.
 - Vrati zakone koji mogu da pomognu prilikom generisanja odgovora.
 - Ukoliko korisnikovo pitanje ne odgovara ni jednom zakonu vrati listu sa generickim stringom: ["nema_zakona"].
-- Primer JSON odgovora:
 
+**PRIMER ODGOVORA:**
 {{
     response: ["ime_zakona"]
 }}
+"""
 
+USER_QUERY = """
 **PITANJE KORISINKA:**
 {query}
 """
