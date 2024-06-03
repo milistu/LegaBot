@@ -1,4 +1,4 @@
-# Legal ChatBot 👩‍⚖️
+# Legal ChatBot
 
 ![LegaBot Logo](https://github.com/milistu/LegaBot/blob/main/assets/Legabot-Dark-Vertical.svg "LegaBot Dark Logo")
 
