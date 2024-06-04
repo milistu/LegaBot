@@ -1,19 +1,21 @@
+import json
 import os
-from typing import Generator, List, Tuple
+from typing import Dict, Generator, List
 
 import streamlit as st
 import yaml
-from langfuse.decorators import observe
+from langfuse.decorators import langfuse_context, observe
+from langfuse.openai import openai
 from loguru import logger
-from openai import OpenAI
+from openai.types.chat import ChatCompletion
 from pydantic import BaseModel
 from qdrant_client import QdrantClient
 
 from database.utils import embed_text, get_context, search
 from llm.prompts import DEFAULT_CONTEXT
-from llm.utils import get_answer, get_messages
-from router.query_router import semantic_query_router
-from router.router_prompt import DEFAULT_ROUTER_RESPONSE, ROUTER_PROMPT
+from llm.utils import formate_messages_chat
+from router.query_router import formate_messages_router
+from router.router_prompt import DEFAULT_ROUTER_RESPONSE
 
 LOGO_URL = "assets/Legabot-Logomark.svg"
 LOGO_TEXT_URL = "assets/Legabot-Light-Horizontal.svg"
@@ -71,7 +73,7 @@ def load_config(yaml_file_path: str = "./config.yaml") -> Config:
 
 
 @st.cache_resource
-def initialize_clients() -> Tuple[OpenAI, QdrantClient]:
+def initialize_clients() -> QdrantClient:
     """
     Initializes and returns the clients for OpenAI and Qdrant services.
 
@@ -87,27 +89,51 @@ def initialize_clients() -> Tuple[OpenAI, QdrantClient]:
         qdrant_api_key = os.environ["QDRANT_API_KEY"]
         qdrant_client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
 
-        # Retrieve OpenAI client configuration from environment variables
-        openai_api_key = os.environ["OPENAI_API_KEY"]
-        openai_client = OpenAI(api_key=openai_api_key)
-
-        return openai_client, qdrant_client
+        return qdrant_client
     except KeyError as e:
         error_msg = f"Missing environment variable: {str(e)}"
         logger.error(error_msg)
         raise EnvironmentError(error_msg)
 
 
+@observe(as_type="generation")
+def call_llm(
+    model: str,
+    temperature: float,
+    messages: List[Dict],
+    json_response: bool = False,
+    stream: bool = False,
+) -> ChatCompletion:
+    """
+    Get an answer from the OpenAI chat model.
+
+    Args:
+        model (str): The model name to use.
+        temperature (float): The temperature setting for the model.
+        messages (List[Dict]): The list of messages to send to the model.
+        stream (bool, optional): Whether to stream the response. Defaults to False.
+
+    Returns:
+        ChatCompletion: The chat completion response from OpenAI.
+    """
+    return openai.chat.completions.create(
+        model=model,
+        response_format={"type": "json_object"} if json_response else None,
+        temperature=temperature,
+        messages=messages,
+        stream=stream,
+    )
+
+
 @observe()
 def generate_response(
-    query: str, openai_client: OpenAI, qdrant_client: QdrantClient, config: Config
+    query: str, qdrant_client: QdrantClient, config: Config
 ) -> Generator[str, None, None]:
     """
     Generates a response for a given user query using a combination of semantic search and a chat model.
 
     Args:
     - query (str): The user's query string.
-    - openai_client (OpenAI): Client to interact with OpenAI's API.
     - qdrant_client (QdrantClient): Client to interact with Qdrant's API.
     - config (Config): Configuration settings for API interaction and response handling.
 
@@ -120,35 +146,36 @@ def generate_response(
             -config.openai.chat.max_conversation :
         ]
 
+        # Determine the relevant collections to route the query to
+        messages = formate_messages_router(query)
+        response = call_llm(
+            model=config.openai.router.model,
+            temperature=config.openai.router.temperature,
+            messages=messages,
+            json_response=True,
+        )
+        collections = json.loads(response.choices[0].message.content)["response"]
+        logger.info(f"Query routed to collections: {collections}")
+        langfuse_context.update_current_trace(tags=collections)
+
         # Embed the user query using the specified model in the configuration
         embedding_response = embed_text(
-            client=openai_client,
             text=query,
             model=config.openai.embeddings.model,
         )
         embedding = embedding_response.data[0].embedding
 
-        # Determine the relevant collections to route the query to
-        collections = semantic_query_router(
-            client=openai_client,
-            model=config.openai.router.model,
-            query=query,
-            prompt=ROUTER_PROMPT,
-            temperature=config.openai.router.temperature,
-        )
-        logger.info(f"Query routed to collections: {collections}")
-
         # Determine the context for the chat model based on the routed collections
         context = determine_context(collections, embedding, qdrant_client)
 
         # Generate the response stream from the chat model
-        stream = get_answer(
-            client=openai_client,
+        messages = formate_messages_chat(
+            context=context, query=query, conversation=st.session_state.messages
+        )
+        stream = call_llm(
             model=config.openai.chat.model,
             temperature=config.openai.chat.temperature,
-            messages=get_messages(
-                context=context, query=query, conversation=st.session_state.messages
-            ),
+            messages=messages,
             stream=True,
         )
 
@@ -157,6 +184,8 @@ def generate_response(
             part = chunk.choices[0].delta.content
             if part is not None:
                 yield part
+
+        langfuse_context.flush()
 
     except Exception as e:
         logger.error(f"An error occurred while generating the response: {str(e)}")
