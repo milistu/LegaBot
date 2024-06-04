@@ -5,8 +5,9 @@ from typing import Dict, List, Union
 
 import numpy as np
 import tiktoken
+from langfuse.decorators import observe
+from langfuse.openai import openai
 from loguru import logger
-from openai import OpenAI
 from openai.types import CreateEmbeddingResponse
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import (
@@ -86,13 +87,12 @@ def search(
     )
 
 
-def embed_text(
-    client: OpenAI, text: Union[str, list], model: str
-) -> CreateEmbeddingResponse:
+@observe()
+def embed_text(text: Union[str, list], model: str) -> CreateEmbeddingResponse:
     """
     Create embeddings using OpenAI API.
     """
-    response = client.embeddings.create(input=text, model=model)
+    response = openai.embeddings.create(input=text, model=model)
     return response
 
 
