@@ -23,7 +23,7 @@ st.title("LegaBot")
 st.divider()
 
 # Initialize API clients for OpenAI and Qdrant and load configuration settings.
-openai_client, qdrant_client = initialize_clients()
+qdrant_client = initialize_clients()
 config = load_config()
 
 # Display the logo and set up the sidebar with useful information and links.
@@ -63,7 +63,6 @@ if prompt := st.chat_input("Postavi pitanje vezano za pravo..."):
         # Generate a response using the LLM and display it as a stream.
         stream = generate_response(
             query=prompt,
-            openai_client=openai_client,
             qdrant_client=qdrant_client,
             config=config,
         )
