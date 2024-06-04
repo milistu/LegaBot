@@ -3,7 +3,7 @@ openai:
     model:  "text-embedding-3-small"
     dimensions: 1536
   chat:
-    model:  "gpt-4-turbo-preview"
+    model:  "gpt-4o"
     temperature: 0
     max_conversation: 100
   router:
