@@ -1,16 +1,18 @@
 import streamlit as st
 from dotenv import find_dotenv, load_dotenv
+from streamlit_theme import st_theme
 
 from llm.prompts import INTRODUCTION_MESSAGE
 from utils import (
+    AUTHORS,
+    LOGO_TEXT_DARK_URL,
+    LOGO_TEXT_LIGHT_URL,
+    LOGO_URL,
+    QUERY_SUGGESTIONS,
+    WARNING_MESSAGE,
     generate_response,
     initialize_clients,
     load_config,
-    WARNING_MESSAGE,
-    QUERY_SUGGESTIONS,
-    AUTHORS,
-    LOGO_URL,
-    LOGO_TEXT_URL,
 )
 
 # Load environment variables from the .env file.
@@ -26,8 +28,20 @@ st.divider()
 qdrant_client = initialize_clients()
 config = load_config()
 
+# Determine the theme and set the appropriate logo
+theme = st_theme()["base"]
+print(f"orginal theme: {theme}")
+if theme == "dark":
+    logo_url = LOGO_TEXT_DARK_URL
+    print(theme)
+    print("changed logo: ", logo_url)
+else:
+    logo_url = LOGO_TEXT_LIGHT_URL
+    print(theme)
+    print("changed logo: ", logo_url)
+
 # Display the logo and set up the sidebar with useful information and links.
-st.logo(LOGO_TEXT_URL, icon_image=LOGO_URL)
+st.logo(logo_url, icon_image=LOGO_URL)
 with st.sidebar:
     st.subheader("💡 Query Suggestions")
     with st.container(border=True, height=200):
