@@ -29,16 +29,13 @@ qdrant_client = initialize_clients()
 config = load_config()
 
 # Determine the theme and set the appropriate logo
-theme = st_theme()["base"]
-print(f"orginal theme: {theme}")
-if theme == "dark":
-    logo_url = LOGO_TEXT_DARK_URL
-    print(theme)
-    print("changed logo: ", logo_url)
-else:
-    logo_url = LOGO_TEXT_LIGHT_URL
-    print(theme)
-    print("changed logo: ", logo_url)
+theme_data = st_theme()
+st.session_state.theme = (
+    theme_data["base"] if theme_data is not None else "default_theme"
+)
+logo_url = (
+    LOGO_TEXT_DARK_URL if st.session_state.theme == "dark" else LOGO_TEXT_LIGHT_URL
+)
 
 # Display the logo and set up the sidebar with useful information and links.
 st.logo(logo_url, icon_image=LOGO_URL)
