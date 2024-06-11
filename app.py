@@ -20,7 +20,7 @@ load_dotenv(find_dotenv())
 
 
 # Set Streamlit page configuration with custom title and icon.
-st.set_page_config(page_title="Your Lawyer Assistant", page_icon=LOGO_URL)
+st.set_page_config(page_title="LegaBot", page_icon=LOGO_URL)
 st.title("LegaBot")
 st.divider()
 
