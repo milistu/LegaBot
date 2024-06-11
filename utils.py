@@ -30,7 +30,7 @@ QUERY_SUGGESTIONS = """
 Na koliko dana godisnjeg imam pravo?\n
 Da li smem da koristim porodiljsko bolovanje zene umesto nje?\n
 Koji porez placam ako sam preduzetnik?\n
-Da li mogu da trazim da se izbrisu moji podaci sa sajta ako ih nisam odborio?\n
+Da li mogu da trazim da se izbrisu moji podaci sa sajta ako ih nisam odobrio?\n
 U kom roku mogu da trazim zamenu proizvoda kojim nisam zadovoljan?\n
 Kome pripadaju pokloni koje smo muz i ja dobili na vencanju?
 """
