@@ -3363,6 +3363,20 @@ files = [
 ]
 
 [[package]]
+name = "st-theme"
+version = "1.2.3"
+description = "A component that returns the active theme of the Streamlit app."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "st-theme-1.2.3.tar.gz", hash = "sha256:ca97aece1a48ded6e83fd742c27cb0851e1bce2100ab4b6c37c7b6e003b65b42"},
+    {file = "st_theme-1.2.3-py3-none-any.whl", hash = "sha256:0a54d9817dd5f8a6d7b0d071b25ae72eacf536c63a5fb97374923938021b1389"},
+]
+
+[package.dependencies]
+streamlit = ">=1.33"
+
+[[package]]
 name = "stack-data"
 version = "0.6.3"
 description = "Extract data from python stack frames and tracebacks for informative displays"
@@ -3977,4 +3991,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "4a878881a4977664e2bc67a2e3831c59fa2a603285d9029aefb74b1baea1fde2"
+content-hash = "f0570d131c483544b40d7d013ee5b11b711daa5f56dcc5a12eb5e1e2ffb91720"
