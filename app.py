@@ -51,34 +51,38 @@ with st.sidebar:
     st.subheader("✍️ Authors")
     st.markdown(AUTHORS)
 
+tab_general, tab_expert = st.tabs(["General", "Expert"])
 
-# Initialize or update the session state for storing chat messages.
-if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": INTRODUCTION_MESSAGE}]
+with tab_general:
+    # Initialize or update the session state for storing chat messages.
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {"role": "assistant", "content": INTRODUCTION_MESSAGE}
+        ]
 
-# Display all chat messages stored in the session state.
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    # Display all chat messages stored in the session state.
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-# Handle user input and generate responses.
-if prompt := st.chat_input("Postavi pitanje vezano za pravo..."):
-    # Append user message to session state.
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    # Handle user input and generate responses.
+    if prompt := st.chat_input("Postavi pitanje vezano za pravo..."):
+        # Append user message to session state.
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # Display user message in chat container.
-    with st.chat_message("user"):
-        st.markdown(prompt)
+        # Display user message in chat container.
+        with st.chat_message("user"):
+            st.markdown(prompt)
 
-    with st.chat_message("assistant"):
-        # Generate a response using the LLM and display it as a stream.
-        stream = generate_response(
-            query=prompt,
-            qdrant_client=qdrant_client,
-            config=config,
-        )
-        # Write the response stream to the chat.
-        response = st.write_stream(stream)
+        with st.chat_message("assistant"):
+            # Generate a response using the LLM and display it as a stream.
+            stream = generate_response(
+                query=prompt,
+                qdrant_client=qdrant_client,
+                config=config,
+            )
+            # Write the response stream to the chat.
+            response = st.write_stream(stream)
 
-    # Append assistant's response to session state.
-    st.session_state.messages.append({"role": "assistant", "content": response})
+        # Append assistant's response to session state.
+        st.session_state.messages.append({"role": "assistant", "content": response})
