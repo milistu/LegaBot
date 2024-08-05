@@ -5,6 +5,8 @@
 
 Legal ChatBot is an innovative project designed to assist users in navigating the complex world of legal documents.
 
+Visit the [link](https://legabot.streamlit.app/) to try the application.
+
 The theory behind this project is also covered in my [blog](https://medium.com/@milistu/create-your-chatbot-assistant-928daa8d6b46).
 
 Utilizing a combination of RAG (Retrieval-Augmented Generation) technology and a deep knowledge base of law articles, this bot can intelligently reference relevant legal texts during interactions. It offers an interactive platform for querying legal information, making it a valuable tool for professionals, students, and anyone needing quick insights into legal matters. 
