@@ -6,5 +6,5 @@ loguru==0.7.2
 pyyaml==6.0.1
 streamlit==1.35.0
 backoff==2.2.1
-langfuse==2.27.2
+langfuse==2.57.2
 st-theme ==1.2.3
